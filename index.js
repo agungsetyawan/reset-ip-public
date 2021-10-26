@@ -1,6 +1,6 @@
 const puppeteer = require('puppeteer-core')
 const fse = require('fs-extra')
-const https = require('https')
+const axios = require('axios')
 
 const myFrame = (page, iframeName) =>
   page.frames().find((frame) => frame.name() === iframeName)
@@ -114,20 +114,21 @@ const resetIP = async () => {
   }
 }
 
-const main = () => {
-  const req = https.request('https://pi.setyawan.dev', async (r) => {
-    try {
-      if (r.statusCode !== 200) {
-        console.info('Down')
-        await resetIP()
-      } else {
-        console.info('Up')
-      }
-    } catch (error) {
-      console.error(error)
+const main = async () => {
+  try {
+    console.log('Checking...')
+    const data = await axios({
+      method: 'get',
+      url: 'https://pi.setyawan.dev',
+      timeout: 1000 * 10 // Wait for 10 seconds
+    })
+    console.log(data?.status)
+  } catch (error) {
+    console.log(error?.code)
+    if (error?.code === 'ECONNABORTED') {
+      await resetIP()
     }
-  })
-  req.end()
+  }
 }
 
 main()

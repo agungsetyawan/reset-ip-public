@@ -12,6 +12,7 @@
   ],
   "author": "agungsetyawan",
   "dependencies": {
+    "axios": "^0.24.0",
     "fs-extra": "^10.0.0",
     "puppeteer-core": "^10.4.0"
   }

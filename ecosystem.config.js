@@ -3,7 +3,7 @@ module.exports = {
     {
       name: 'reset-ip-public',
       script: './index.js',
-      cron_restart: '*/5 * * * *',
+      cron_restart: '* * * * *',
       autorestart: false
     }
   ]
