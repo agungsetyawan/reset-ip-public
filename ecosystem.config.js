@@ -4,7 +4,8 @@ module.exports = {
       name: 'reset-ip-public',
       script: './index.js',
       cron_restart: '* * * * *',
-      autorestart: false
+      autorestart: false,
+      log_date_format: 'YYYY-MM-DD HH:mm:ss'
     }
   ]
 }
