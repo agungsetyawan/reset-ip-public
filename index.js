@@ -1,6 +1,24 @@
+const dotenv = require('dotenv')
 const puppeteer = require('puppeteer-core')
+const nodemailer = require('nodemailer')
 const fse = require('fs-extra')
 const axios = require('axios')
+
+dotenv.config()
+
+const smtp = {
+  host: process.env.SMTP_HOST,
+  port: process.env.SMTP_PORT,
+  auth: {
+    user: process.env.SMTP_USERNAME,
+    pass: process.env.SMTP_PASSWORD
+  }
+}
+const transport = nodemailer.createTransport(smtp)
+const sendEmail = async (to, subject, text) => {
+  const msg = { from: process.env.EMAIL_FROM, to, subject, text }
+  await transport.sendMail(msg)
+}
 
 const myFrame = (page, iframeName) =>
   page.frames().find((frame) => frame.name() === iframeName)
@@ -126,7 +144,24 @@ const main = async () => {
   } catch (error) {
     console.log(error?.code)
     if (error?.code === 'ECONNABORTED') {
+      const ipify = 'https://api.ipify.org?format=json'
+      const recipient = 'setyaggmu@gmail.com'
+
+      const before = await axios({ method: 'get', url: ipify })
+      await sendEmail(
+        recipient,
+        'Waiting for IP Address reset',
+        `Current IP Address: ${before?.data?.ip || ''}`
+      )
+
       await resetIP()
+
+      const after = await axios({ method: 'get', url: ipify })
+      await sendEmail(
+        recipient,
+        'Your IP address has been successfully reset',
+        `Current IP Address: ${after?.data?.ip || ''}`
+      )
     }
   }
 }
