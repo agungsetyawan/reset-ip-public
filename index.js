@@ -143,7 +143,7 @@ const main = async () => {
     console.log(data?.status)
   } catch (error) {
     console.log(error?.code)
-    if (error?.code === 'ECONNABORTED') {
+    if (error?.code === 'ECONNABORTED' || error?.code === 'ECONNRESET') {
       const ipify = 'https://api.ipify.org?format=json'
       const recipient = 'setyaggmu@gmail.com'
 
